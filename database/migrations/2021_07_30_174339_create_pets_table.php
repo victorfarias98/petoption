@@ -27,6 +27,7 @@ class CreatePetsTable extends Migration
             $table->foreignId('founder_id')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->datetime('found_on')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

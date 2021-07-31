@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pets\Pet;
+use App\Models\Pets\Breed;
 use Illuminate\Http\Request;
+use App\Models\Pets\Category;
 
 class PetController extends Controller
 {
@@ -14,7 +16,7 @@ class PetController extends Controller
      */
     public function index(Request $request)
     {
-        $pets = Pet::all();
+        $pets = Pet::simplePaginate(12);
         return view('pets.index', ['pets' => $pets]);
     }
 
@@ -25,7 +27,12 @@ class PetController extends Controller
      */
     public function create()
     {
-        return view('pets.create');
+        $breeds = Breed::all();
+        $categories = Category::all();
+        return view('pets.create', [
+            "breeds" => $breeds,
+            "categories" => $categories
+        ] );
     }
 
     /**
@@ -36,24 +43,20 @@ class PetController extends Controller
      */
     public function store(Request $request)
     {
-        // var_dump(json_encode($request->all()));
-        // exit;
+
         $pet = new Pet;
         $pet->nickname = $request->nickname;
         $pet->description = $request->description;
         $pet->category_id = $request->category_id;
         $pet->breed_id = $request->breed_id;
         $request->validate([
-            'file' => 'required|mimes:png,jpg,jpeg,gif'
+            'thumb' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-        $path = $request->file('thumb')->storeAs(
-            'thumb',  $pet->nickname
-        );
-        $pet->thumb = $path;
-
+        $imageName = $pet->nickname.time().'.'.$request->thumb->extension();
+        $request->thumb->move(public_path('pet_thumbs'), $imageName);
+        $pet->thumb = $imageName;
         if($pet->save()){
-            $pets = Pet::all();
-            return view('pets.index', ['pets' => $pets]);
+            return redirect()->route('pets.index');
         }
     }
 
@@ -65,7 +68,7 @@ class PetController extends Controller
      */
     public function show(Pet $pet)
     {
-        //
+        return view('pets.show', ['pet' => $pet]);
     }
 
     /**

@@ -25,6 +25,8 @@ class PetFactory extends Factory
             'nickname' => $this->faker->name(),
             'description' => $this->faker->text(),
             'thumb' => $this->faker->imageUrl(),
+            'breed_id' => 1,
+            'category_id' => 0,
             'found_on' => $this->faker->dateTime('now')
         ];
     }
