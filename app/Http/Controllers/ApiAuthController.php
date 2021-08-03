@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 use Illuminate\Support\Facades\Session;
 
 class ApiAuthController extends Controller
@@ -27,7 +27,7 @@ class ApiAuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = Auth::attempt($credentials)) {
+        if (! $token = auth()->guard('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -41,7 +41,7 @@ class ApiAuthController extends Controller
      */
     public function me()
     {
-        return response()->json(Auth::user());
+        return response()->json(auth()->user());
     }
 
     /**
@@ -51,8 +51,7 @@ class ApiAuthController extends Controller
      */
     public function logout()
     {
-        Session::flush();
-        Auth::logout();
+        auth()->guard('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -64,7 +63,7 @@ class ApiAuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(Auth::refresh());
+        return $this->respondWithToken(auth()->refresh());
     }
 
     /**
@@ -79,7 +78,7 @@ class ApiAuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }
 }
