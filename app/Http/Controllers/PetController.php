@@ -6,6 +6,7 @@ use App\Models\Pets\Pet;
 use App\Models\Pets\Breed;
 use Illuminate\Http\Request;
 use App\Models\Pets\Category;
+use Flasher\Prime\FlasherInterface;
 
 class PetController extends Controller
 {
@@ -41,7 +42,7 @@ class PetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, FlasherInterface $flasher)
     {
 
         $pet = new Pet;
@@ -56,8 +57,11 @@ class PetController extends Controller
         $request->thumb->move(public_path('pet_thumbs'), $imageName);
         $pet->thumb = $imageName;
         if($pet->save()){
+            $flasher->addSuccess('Pet cadastrado com sucesso!');
             return redirect()->route('pets.index');
         }
+        $flasher->addError('Pet não cadastrado.');
+        return back();
     }
 
     /**

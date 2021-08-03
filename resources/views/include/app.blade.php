@@ -303,6 +303,7 @@
 </script>
     <script src="{{ url('assets/js/main.js') }}"></script>
     <script src="https://kit.fontawesome.com/d35eff7b0a.js" crossorigin="anonymous"></script>
+    @flasher_render
 </body>
 
 </html>
