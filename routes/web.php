@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('login', [AuthController::class, 'formLogin'])->name('login');
 Route::post('login-form', [AuthController::class, 'customLogin'])->name('login.custom');
 Route::get('cadastro', [AuthController::class, 'registrationForm'])->name('register-user');

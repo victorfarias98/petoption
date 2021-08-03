@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ApiAuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,7 +13,22 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// Route::middleware('auth:api')->group(function () {
+//     Route::post('login', [ApiAuthController::class, 'login']);
+//     Route::post('logout', [ApiAuthController::class, 'logout']);
+//     Route::post('refresh', [ApiAuthController::class, 'refresh']);
+//     Route::post('me', [ApiAuthController::class, 'me']);
+// });
+Route::group([
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function ($router) {
+
+    Route::post('login', [ApiAuthController::class, 'login']);
+    Route::post('logout', [ApiAuthController::class, 'logout']);
+    Route::post('refresh', [ApiAuthController::class, 'refresh']);
+    Route::post('me', [ApiAuthController::class, 'me']);
+
 });
