@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Pets\Pet;
 use App\Models\Pets\Breed;
 use Illuminate\Http\Request;
 use App\Models\Pets\Category;
+use App\Models\Common\Address;
+use Flasher\Laravel\Facade\Flasher;
 use Flasher\Prime\FlasherInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Database\Eloquent\Builder;
 
 class PetController extends Controller
 {
@@ -42,25 +48,43 @@ class PetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, FlasherInterface $flasher)
+    public function store(Request $request)
     {
-
         $pet = new Pet;
         $pet->nickname = $request->nickname;
         $pet->description = $request->description;
         $pet->category_id = $request->category_id;
         $pet->breed_id = $request->breed_id;
+        $pet->founder_id =  Auth::user()->id;
         $request->validate([
-            'thumb' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'thumb' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
         ]);
+        $address = new Address;
+        $address->zip_code = $request->address_zip_code;
+        $address->street = $request->address_street;
+        $address->number = $request->address_number;
+        $address->district = $request->address_district;
+        $address->city = $request->address_city;
+        $address->state = $request->address_state;
+        $address->country = 'Brasil';
+
         $imageName = $pet->nickname.time().'.'.$request->thumb->extension();
-        $request->thumb->move(public_path('pet_thumbs'), $imageName);
         $pet->thumb = $imageName;
         if($pet->save()){
-            $flasher->addSuccess('Pet cadastrado com sucesso!');
-            return redirect()->route('pets.index');
+            $request->thumb->move(public_path('pet_thumbs'), $imageName);
+            $address->addressable_id = Pet::latest()->first()->id;
+            $address->addressable_type = 'pet';
+            if($address->save()){
+                Flasher::addSuccess('Pet cadastrado com sucesso!');
+                return redirect()->route('pets.index');
+            }
+            else{
+                $pet->destroy($pet->id);
+                Flasher::addError('Pet não cadastrado.');
+                return back();
+            }
         }
-        $flasher->addError('Pet não cadastrado.');
+        Flasher::addError('Pet não cadastrado.');
         return back();
     }
 
@@ -72,7 +96,26 @@ class PetController extends Controller
      */
     public function show(Pet $pet)
     {
-        return view('pets.show', ['pet' => $pet]);
+
+        $address = Address::where('addressable_id', $pet->id)->first();
+        $endereco = $address->street.' '.$address->number.' '.$address->district.' '.$address->city.' '.$address->state;
+        $response = Http::get("https://nominatim.openstreetmap.org/search.php?q=$endereco&format=jsonv2");
+        $lat = $response->json()[0]['lat'];
+        $lon = $response->json()[0]['lon'];
+        $display_name = $response->json()[0]['display_name'];
+        $breed = $pet->breed;
+        $category = $pet->category;
+        $founder = User::find($pet->founder_id)->first();
+        return view('pets.show', [
+            "pet" => $pet ,
+            "address" => $address,
+            "lat" => $lat,
+            "lon" => $lon,
+            "display_name" => $display_name,
+            "breed" => $breed,
+            "category" => $category,
+            "founder" => $founder
+        ]);
     }
 
     /**

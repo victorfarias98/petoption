@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Flasher\Laravel\Facade\Flasher;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -23,10 +24,11 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+            Flasher::addSuccess('Login efetuado com sucesso! Seja bem vindo(a)!');
             return redirect()->route('home');
         }
 
-        return redirect("login")->withSuccess('Login details are not valid');
+        return redirect("login");
     }
     public function registrationForm()
     {
@@ -41,7 +43,13 @@ class AuthController extends Controller
         ]);
         $data = $request->all();
         $check = $this->create($data);
-        return redirect("pets.index")->withSuccess('You have signed-in');
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            Flasher::addSuccess('Cadastrado com sucesso! Seja bem vindo(a)!');
+            return redirect()->route('home');
+        }
+        Flasher::addError('Erro no seu cadastro, por favor tente novamente');
+        return redirect()->route('auth.register');
     }
     public function create(array $data)
     {

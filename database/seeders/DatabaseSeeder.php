@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\Pets\Category::factory(5)->create();
         \App\Models\Pets\Breed::factory(5)->create();
         \App\Models\Pets\Pet::factory(24)->create();
+        \App\Models\Common\Address::factory(1)->create();
     }
 }

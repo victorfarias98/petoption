@@ -66,5 +66,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
+    public function addresses()
+    {
+        return $this->morphOne(Adress::class, 'addressable', 'user');
+    }
 }

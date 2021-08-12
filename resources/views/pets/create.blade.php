@@ -50,44 +50,48 @@
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-2 mx-auto">
-                    <button class="btn btn-primary mb-5"type="submit" >Cadastrar</button>
-                </div>
-            </div>
+
 
         </div>
-        {{-- <div class="card">
+        <div class="card">
             <div class="card-header">
                 <h4 class="card-title">Endereço ( onde esse pet foi encontrado )</h4>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-10">
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="street">CEP</label>
+                            <input type="text" class="form-control"name="address_zip_code" id="zip_code"
+                                placeholder="00000-000">
+                        </div>
+                    </div>
+                    <div class="col-md-9">
                         <div class="form-group">
                             <label for="street">Rua</label>
-                            <input type="text" class="form-control"name="nickname" id="street"
+                            <input type="text" class="form-control"name="address_street" id="street"
                                 placeholder="Rua Washington Jorge da silva">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <div class="form-group">
                             <label for="basicInput">Número</label>
-                            <input type="text" class="form-control"name="nickname" id="basicInput"
+                            <input type="text" class="form-control"name="address_number" id="number"
                                 placeholder="000">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="neighbourhood">Bairro</label>
-                            <input type="text" class="form-control"name="nickname" id="neighbourhood"
+                            <input type="text" class="form-control" name="address_district" id="district"
                                 placeholder="Centro">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="city">Cidade / Vila</label>
-                            <input type="text" class="form-control"name="nickname" id="city"
+                            <input type="text" class="form-control"name="address_city" id="city"
                                 placeholder="Paulo Afonso">
                         </div>
                     </div>
@@ -95,19 +99,20 @@
                         <div class="form-group mb-3">
                             <label
                                 for="inputGroupSelect01">Estado / UF</label>
-                            <select class="form-select" id="inputGroupSelect01">
-                                <option selected>Selecione</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
+                                <input type="text" class="form-control"name="address_state" id="state"
+                                placeholder="Paulo Afonso">
                         </div>
                     </div>
                 </div>
             </div>
-        </div> --}}
-
+        </div>
+        <div class="row">
+            <div class="col-md-2 mx-auto">
+                <button class="btn btn-primary mb-5"type="submit" >Cadastrar</button>
+            </div>
+        </div>
     </div>
 </form>
+
 @endsection
 

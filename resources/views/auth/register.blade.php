@@ -16,7 +16,7 @@
                         <h1>{{ env('APP_NAME', 'PetOption'); }}</h1>
                     </div>
                     <h1 class="auth-title">Cadastro</h1>
-                    <form action="{{ route('register.custom')}}">
+                    <form action="{{ route('register.custom')}}" method="POST">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="text" name="name" class="form-control form-control-xl" placeholder="Nome">
